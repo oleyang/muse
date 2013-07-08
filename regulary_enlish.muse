@@ -1,0 +1,30 @@
+
+
+
+
+
+
+
+* 标点符号
+** 句号
+ - period
+
+** 逗号
+ - comma
+
+** 破折号
+ - dash
+
+** 下划线
+ - under line
+ - underscores
+
+** 括弧
+包括()[]{}
+ - bracket
+
+** 大小写
+ - 大写<br>
+  - uppercase
+ - 小写 <br>
+  - lowercase

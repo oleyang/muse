@@ -1,0 +1,44 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+主服务器：
+ 1. 建立帐号<br>
+建立一个从服务器连接的帐号，该帐号必须有REPLICATION SLAVE权限.例如创建一个帐号为：replication,密码：mypassword的
+<src type="mysql">
+grant replication slave on *.* 'replication'@'192.168.1.%' identified by 'mypassword'；
+flush privileges;
+</src>
+
+ 2. 修改配置<br>
+修改my.cnf的配置文件
+<src type="mysql">
+[mysqld]
+server-id=1  #必须是数字
+log-bin=/data0/mysql/binlog/binlog
+binlog-do-db=test # 需要备份的数据库，多个写多行
+binlog-ignore-db=mysql # 不需要备份的数据库，多个写多行
+</src>
+ 3. 重启Mysql<br>
+<src type="mysql">
+service mysqld restart
+</src>
+ 4. 查看状态<br>
+<src type="mysql">
+
+</src>

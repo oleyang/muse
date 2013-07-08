@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>网购机系统安装指南 (by OLE YANG)</title>
+    <meta name="generator" content="muse.el" />
+    <meta http-equiv="Content-Type"
+          content="text/xhtml; charset=utf-8" />
+    <style type="text/css">
+body {
+  background: white; color: black;
+  margin-left: 3%; margin-right: 7%;
+}
+
+p { margin-top: 1% }
+p.verse { margin-left: 3% }
+
+.example { margin-left: 3% }
+
+h2 {
+  margin-top: 25px;
+  margin-bottom: 0px;
+}
+h3 { margin-bottom: 0px; }
+    </style>
+  </head>
+  <body>
+    <h1>网购机系统安装指南 (by OLE YANG)</h1>
+    <!-- Page published by Emacs Muse begins here -->
+<div class="contents">
+<dl>
+<dt>
+<a href="#sec1">安装fedora 17</a>
+</dt>
+<dd>
+<dl>
+<dt>
+<a href="#sec2">启动sshd</a>
+</dt>
+<dt>
+<a href="#sec3">设置yum源</a>
+</dt>
+<dt>
+<a href="#sec4">更新系统</a>
+</dt>
+<dt>
+<a href="#sec5">安装轻量级桌面</a>
+</dt>
+<dt>
+<a href="#sec6">root自动登陆</a>
+</dt>
+<dt>
+<a href="#sec7">安装google浏览器</a>
+</dt>
+<dt>
+<a href="#sec8">设置桌面</a>
+</dt>
+<dd>
+<dl>
+<dt>
+<a href="#sec9">桌面背景</a>
+</dt>
+<dt>
+<a href="#sec10">隐藏工具栏</a>
+</dt>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+
+
+<h2><a name="sec1" id="sec1"></a>
+安装fedora 17</h2>
+
+<h3><a name="sec2" id="sec2"></a>
+启动sshd</h3>
+
+<ol>
+<li>关闭selinux
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>vi /etc/sysconfig/selinux
+SELINUX=disabled
+</pre></li>
+
+<li>防火墙开放22端口
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>vi /etc/sysconfig/iptalbes
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT &lt;---&#22686;&#21152;&#21040;COMMIT&#20043;&#21069;
+service sshd restart
+</pre></li>
+
+<li>允许root
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>vi /etc/ssd/sshd_config
+PermitRootLogin yes   // &#21435;&#25481;&#27880;&#37322;
+</pre></li>
+
+<li>启动sshd
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>service sshd restart
+</pre></li>
+
+<li>自动启动
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>chkconfig sshd on
+</pre></li>
+</ol>
+
+
+<h3><a name="sec3" id="sec3"></a>
+设置yum源</h3>
+
+<p class="first">上传163,sohu，google的源到/etc/yum.repos.d中</p>
+
+
+<h3><a name="sec4" id="sec4"></a>
+更新系统</h3>
+
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>yum update -y
+</pre>
+
+
+<h3><a name="sec5" id="sec5"></a>
+安装轻量级桌面</h3>
+
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>yum groupinstall lxde -y
+</pre>
+在gdm中设置用lxde登陆
+
+
+<h3><a name="sec6" id="sec6"></a>
+root自动登陆</h3>
+
+<ol>
+<li>修改custom.conf
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style># vi /etc/gdm/custom.conf
+</pre>
+添加以下内容：
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>[daemon]
+AutomaticLoginEnable=true
+AutomaticLogin=root
+</pre></li>
+
+<li>用户自动登录配置：
+编辑：/etc/gdm/gdm.schemas
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>     &lt;schema&gt;
+      &lt;key&gt;daemon/AutomaticLoginEnable&lt;/key&gt;
+      &lt;signature&gt;b&lt;/signature&gt;
+      &lt;default&gt;true&lt;/default&gt;        &lt;----&#25226;false&#25913;&#20026;true
+    &lt;/schema&gt;
+    &lt;schema&gt;
+      &lt;key&gt;daemon/AutomaticLogin&lt;/key&gt;
+      &lt;signature&gt;s&lt;/signature&gt;
+      &lt;default&gt;root&lt;/default&gt;
+    &lt;/schema&gt;
+</pre></li>
+
+<li>如果想让root也能登录 ,还要修改下面的内容（经测试可以实现自动登录）
+修改/etc/pam.d下的gdm-fingerprint、gdm-passwd、gdm-smartcard三个文件，注释掉三个文件中的下面语句
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>#auth        required      pam_succeed_if.so user != root quiet
+</pre></li>
+</ol>
+
+
+<h3><a name="sec7" id="sec7"></a>
+安装google浏览器</h3>
+
+<p class="first">google 浏览器yum源</p>
+
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>vi /etc/yum.repos.d/google.repo
+# &#36755;&#20837;&#22914;&#19979;&#20869;&#23481;
+[google-chrome]
+name=google-chrome - 32-bit
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/i386
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+</pre>
+或者从网站上直接下载rpm包来安装
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>https://www.google.com/intl/en/chrome/browser/?&amp;brand=CHMA&amp;utm_campaign=en&amp;utm_source=en-ha-na-us-bk&amp;utm_medium=ha
+</pre>
+然后用命令安装
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>yum install google-chrome-stable -y
+</pre>
+
+
+<h3><a name="sec8" id="sec8"></a>
+设置桌面</h3>
+
+<h4><a name="sec9" id="sec9"></a>
+桌面背景</h4>
+
+
+<h4><a name="sec10" id="sec10"></a>
+隐藏工具栏</h4>
+
+
+
+
+<pre class="src" style="background-color:#2f4f4f;color:#f5deb3;"><style type="text/css"><!--     --></style>
+</pre>
+
+
+
+
+
+<!-- Page published by Emacs Muse ends here -->
+  </body>
+</html>

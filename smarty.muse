@@ -1,0 +1,27 @@
+
+* $smarty.get/post
+smarty可以获取查询的字符串, 例如:获取http://www.examplet.com/q?city=beijing&keyword=hotel 中的city和keyword的值,不需要在php脚本中区assign,只需要在.tpl中写
+<src type="html">
+city={$smarty.get.city}
+keyword={$smarty.get.keyword}
+</src>
+当然如果用post提交的要用{$smarty.post.input_name},挺方便的.
+
+* $smarty.server
+** $smarty.server.QUERY_STRING
+去的查询字符串,这是一整个字符串,不是$smarty.get中的单个值
+
+例如: http://www.examplet.com/q?city=beijing&keyword=hotel
+<src type="html">
+{$smarty.server.QUERY_STRING}
+</src>
+输出结果
+<src type="html">
+city=beijing&keyword=hote 
+</src>
+
+* escape
+对输入字符串进行编码,编码的类型可以是html,url,hex,quotes,javascript,mail
+
+* html_options
+自定义html中的select的option
